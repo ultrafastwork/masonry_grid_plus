@@ -1,0 +1,15 @@
+name: masonry_grid_plus
+description: A maintained fork of flutter_staggered_grid_view. Provides Flutter grid layouts (masonry, staggered, quilted, woven, etc.).
+version: 0.1.0
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.7.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
