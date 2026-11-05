@@ -7,6 +7,156 @@ import '../../common.dart';
 
 void main() {
   final binding = TestWidgetsFlutterBinding.ensureInitialized();
+
+  group('Patterns that do not fill complete rows', () {
+    Future<void> pumpGrid(
+      WidgetTester tester,
+      List<QuiltedGridTile> pattern, {
+      QuiltedGridRepeatPattern repeatPattern = QuiltedGridRepeatPattern.same,
+    }) async {
+      await binding.setSurfaceSize(const Size(800, 800));
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: GridView.custom(
+            gridDelegate: SliverQuiltedGridDelegate(
+              crossAxisCount: 4,
+              mainAxisSpacing: 4,
+              crossAxisSpacing: 4,
+              repeatPattern: repeatPattern,
+              pattern: pattern,
+            ),
+            childrenDelegate: SliverChildBuilderDelegate(
+              (context, index) => Tile(index: index),
+              childCount: 12,
+            ),
+          ),
+        ),
+      );
+    }
+
+    const s1 = 197.0;
+    const s2 = 398.0;
+    const stride = 201.0;
+
+    testWidgets('leave gaps instead of throwing', (WidgetTester tester) async {
+      await pumpGrid(tester, const [
+        QuiltedGridTile(2, 2),
+        QuiltedGridTile(1, 1),
+      ]);
+      expect(tester.takeException(), isNull);
+
+      // A A B .
+      // A A . .
+      // C C D .
+      // C C . .
+      expect(tester.getTopLeft(find.text('0')), Offset.zero);
+      expect(tester.getSize(find.text('0')), const Size(s2, s2));
+      expect(tester.getTopLeft(find.text('1')), const Offset(2 * stride, 0));
+      expect(tester.getSize(find.text('1')), const Size(s1, s1));
+      expect(tester.getTopLeft(find.text('2')), const Offset(0, 2 * stride));
+      expect(
+        tester.getTopLeft(find.text('3')),
+        const Offset(2 * stride, 2 * stride),
+      );
+    });
+
+    testWidgets('wrap a wide tile that does not fit in the remaining columns', (
+      WidgetTester tester,
+    ) async {
+      await pumpGrid(tester, const [
+        QuiltedGridTile(1, 1),
+        QuiltedGridTile(1, 1),
+        QuiltedGridTile(1, 1),
+        QuiltedGridTile(1, 2),
+      ]);
+      expect(tester.takeException(), isNull);
+
+      // A B C .
+      // D D . .
+      expect(tester.getTopLeft(find.text('2')), const Offset(2 * stride, 0));
+      expect(tester.getTopLeft(find.text('3')), const Offset(0, stride));
+      expect(tester.getSize(find.text('3')), const Size(s2, s1));
+      expect(tester.getTopLeft(find.text('4')), const Offset(0, 2 * stride));
+    });
+
+    for (final repeatPattern in [
+      QuiltedGridRepeatPattern.inverted,
+      QuiltedGridRepeatPattern.mirrored,
+    ]) {
+      testWidgets('work with $repeatPattern', (WidgetTester tester) async {
+        await pumpGrid(tester, const [
+          QuiltedGridTile(2, 2),
+          QuiltedGridTile(1, 1),
+        ], repeatPattern: repeatPattern);
+        expect(tester.takeException(), isNull);
+
+        // No two visible tiles overlap.
+        final rects = [
+          for (var i = 0; i < 12; i++)
+            if (find.text('$i').evaluate().isNotEmpty)
+              tester.getRect(find.text('$i')),
+        ];
+        expect(rects, isNotEmpty);
+        for (var i = 0; i < rects.length; i++) {
+          for (var j = i + 1; j < rects.length; j++) {
+            final overlap = rects[i].intersect(rects[j]);
+            expect(
+              overlap.width > 0 && overlap.height > 0,
+              isFalse,
+              reason: 'tiles $i and $j overlap',
+            );
+          }
+        }
+      });
+    }
+
+    testWidgets('build every visible tile when the viewport ends in a gap', (
+      WidgetTester tester,
+    ) async {
+      // A A B .   <- row 0
+      // A A . .   <- row 1, where the viewport ends: only tile 0 is in it.
+      await binding.setSurfaceSize(const Size(800, 300));
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: GridView.custom(
+            scrollCacheExtent: const ScrollCacheExtent.pixels(0),
+            gridDelegate: SliverQuiltedGridDelegate(
+              crossAxisCount: 4,
+              mainAxisSpacing: 4,
+              crossAxisSpacing: 4,
+              pattern: const [QuiltedGridTile(2, 2), QuiltedGridTile(1, 1)],
+            ),
+            childrenDelegate: SliverChildBuilderDelegate(
+              (context, index) => Tile(index: index),
+              childCount: 12,
+            ),
+          ),
+        ),
+      );
+
+      expect(find.text('0'), findsOneWidget);
+      expect(find.text('1'), findsOneWidget);
+    });
+
+    test('a tile wider than the grid is reported clearly', () {
+      expect(
+        () => SliverQuiltedGridDelegate(
+          crossAxisCount: 2,
+          pattern: const [QuiltedGridTile(1, 3)],
+        ),
+        throwsA(
+          isA<AssertionError>().having(
+            (e) => e.message,
+            'message',
+            contains('crossAxisCount'),
+          ),
+        ),
+      );
+    });
+  });
+
   testWidgets('Quilted Grid same control test', (WidgetTester tester) async {
     await binding.setSurfaceSize(const Size(800, 800));
     await tester.pumpWidget(

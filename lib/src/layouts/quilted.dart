@@ -2,7 +2,6 @@ import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
-import 'package:masonry_grid_plus/src/foundation/extensions.dart';
 
 /// A tile for [SliverQuiltedGridDelegate].
 @immutable
@@ -394,16 +393,38 @@ extension on List<QuiltedGridTile> {
       for (int i = 0; i < tiles.length; i++) {
         final tile = tiles[i];
         final fullIndex = start + i;
-        final crossAxisIndex = offsets.findSmallestIndexWithMinimumValue();
-        final mainAxisIndex = offsets[crossAxisIndex];
+        assert(
+          tile.crossAxisCount <= crossAxisCount,
+          '$tile spans ${tile.crossAxisCount} cells in the cross axis but the '
+          'grid only has $crossAxisCount (crossAxisCount).',
+        );
+        final tileCrossAxisCount = math.min(
+          tile.crossAxisCount,
+          crossAxisCount,
+        );
+        final tileMainAxisCount = tile.mainAxisCount;
+
+        // Place the tile at the topmost, then leftmost, position where it
+        // fits. For a tile spanning several columns of different heights, it
+        // rests on the highest of them, leaving a gap under the others.
+        int crossAxisIndex = 0;
+        int mainAxisIndex = -1;
+        for (int c = 0; c + tileCrossAxisCount <= crossAxisCount; c++) {
+          int base = offsets[c];
+          for (int j = 1; j < tileCrossAxisCount; j++) {
+            base = math.max(base, offsets[c + j]);
+          }
+          if (mainAxisIndex == -1 || base < mainAxisIndex) {
+            mainAxisIndex = base;
+            crossAxisIndex = c;
+          }
+        }
         mainAxisIndexes[fullIndex] = mainAxisIndex;
         crossAxisIndexes[fullIndex] = crossAxisIndex;
 
         // We update the offsets.
-        final tileCrossAxisCount = tile.crossAxisCount;
-        final tileMainAxisCount = tile.mainAxisCount;
         for (int j = 0; j < tileCrossAxisCount; j++) {
-          offsets[crossAxisIndex + j] += tileMainAxisCount;
+          offsets[crossAxisIndex + j] = mainAxisIndex + tileMainAxisCount;
 
           if (indexes != null) {
             for (int k = 0; k < tileMainAxisCount; k++) {
@@ -434,9 +455,15 @@ extension on List<QuiltedGridTile> {
     }
 
     position(this, indexes, 0);
-    final indexList = List<int>.filled(indexes.length, -1);
-    for (final index in indexes.keys) {
-      indexList[index] = indexes[index]!;
+    // Cover every cell of the pattern block, not just the occupied ones, so
+    // that patterns with gaps work. Gaps stay at -1 and are skipped by the
+    // repeat patterns.
+    final indexList = List<int>.filled(
+      offsets.reduce(math.max) * crossAxisCount,
+      -1,
+    );
+    for (final MapEntry(key: cellIndex, value: tileIndex) in indexes.entries) {
+      indexList[cellIndex] = tileIndex;
     }
     final repeatedIndexes = repeatPattern.repeatedIndexes(
       indexList,
@@ -449,6 +476,18 @@ extension on List<QuiltedGridTile> {
           .toList();
       position(repeatedTiles, null, length);
       tiles.addAll(repeatedTiles);
+    }
+
+    // SliverGrid lays out every child between the min index of the first
+    // visible row and the max index of the last one. Tile indexes are not
+    // always monotonic across rows (e.g. a pattern with gaps, or a repeated
+    // block filling a gap), so turn them into a suffix min and a prefix max:
+    // every tile touching rows [a, b] is then within [min(a), max(b)].
+    for (int i = minTileIndexes.length - 2; i >= 0; i--) {
+      minTileIndexes[i] = math.min(minTileIndexes[i], minTileIndexes[i + 1]);
+    }
+    for (int i = 1; i < maxTileIndexes.length; i++) {
+      maxTileIndexes[i] = math.max(maxTileIndexes[i], maxTileIndexes[i - 1]);
     }
 
     return _QuiltedTilePattern(

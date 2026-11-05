@@ -5,6 +5,8 @@
 * `SliverAlignedGrid`/`AlignedGridView` dry layout no longer assigns `size`.
 * `SliverAlignedGrid`/`AlignedGridView` now honor `addAutomaticKeepAlives` and `addRepaintBoundaries`.
 * `SliverQuiltedGridDelegate` now relayouts when `pattern` or `repeatPattern` changes.
+* `SliverQuiltedGridDelegate` no longer throws a `RangeError` for patterns that don't fill complete rows; gaps are left empty, and a wide tile that doesn't fit in the remaining columns wraps to the next row instead of overflowing or overlapping. A tile wider than `crossAxisCount` now fails with a clear assertion message.
+* `SliverQuiltedGridDelegate` no longer skips building visible tiles when the viewport ends in a row that doesn't contain them.
 ### Changed
 * Pattern delegates (woven, staired) compare patterns by value, avoiding a full relayout on every rebuild.
 * `QuiltedGridTile`, `WovenGridTile` and `StairedGridTile` implement `==` and `hashCode`.
