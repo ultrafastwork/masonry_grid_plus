@@ -1,3 +1,16 @@
+## Unreleased
+### Fixed
+* `StaggeredGrid` dry layout no longer reads stale child sizes or mutates child offsets.
+* `StaggeredGridTile.fit` no longer crashes when the grid's axis direction is reversed.
+* `SliverAlignedGrid`/`AlignedGridView` dry layout no longer assigns `size`.
+* `SliverAlignedGrid`/`AlignedGridView` now honor `addAutomaticKeepAlives` and `addRepaintBoundaries`.
+* `SliverQuiltedGridDelegate` now relayouts when `pattern` or `repeatPattern` changes.
+### Changed
+* Pattern delegates (woven, staired) compare patterns by value, avoiding a full relayout on every rebuild.
+* `QuiltedGridTile`, `WovenGridTile` and `StairedGridTile` implement `==` and `hashCode`.
+* Fewer allocations in the masonry layout hot path.
+* Adopted `flutter_lints` 6 and strict analyzer modes.
+
 ## 0.1.0 (masonry_grid_plus)
 ### Changed
 * Forked from flutter_staggered_grid_view 0.7.0 and renamed to masonry_grid_plus.

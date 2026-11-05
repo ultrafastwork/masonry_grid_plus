@@ -26,14 +26,14 @@ void main() {
       ),
     );
 
-    void _expectTopLeft(int index, Offset topLeft) {
+    void expectTopLeft(int index, Offset topLeft) {
       expect(tester.getTopLeft(find.text('$index')), equals(topLeft));
     }
 
-    _expectTopLeft(0, const Offset(0, 0));
-    _expectTopLeft(1, const Offset(200, 0));
-    _expectTopLeft(2, const Offset(400, 0));
-    _expectTopLeft(3, const Offset(600, 0));
+    expectTopLeft(0, const Offset(0, 0));
+    expectTopLeft(1, const Offset(200, 0));
+    expectTopLeft(2, const Offset(400, 0));
+    expectTopLeft(3, const Offset(600, 0));
 
     await tester.pumpWidget(
       Align(
@@ -54,10 +54,10 @@ void main() {
       ),
     );
 
-    _expectTopLeft(0, const Offset(0, 0));
-    _expectTopLeft(1, const Offset(0, 150));
-    _expectTopLeft(2, const Offset(0, 300));
-    _expectTopLeft(3, const Offset(0, 450));
+    expectTopLeft(0, const Offset(0, 0));
+    expectTopLeft(1, const Offset(0, 150));
+    expectTopLeft(2, const Offset(0, 300));
+    expectTopLeft(3, const Offset(0, 450));
   });
 
   testWidgets('Children should be of the maximum size', (tester) async {
@@ -81,12 +81,12 @@ void main() {
       ),
     );
 
-    void _expectSize(int index, Size size) {
+    void expectSize(int index, Size size) {
       expect(tester.getSize(find.text('$index')), equals(size));
     }
 
     for (int i = 0; i < 4; i++) {
-      _expectSize(i, const Size(200, 200));
+      expectSize(i, const Size(200, 200));
     }
 
     await tester.pumpWidget(
@@ -109,12 +109,13 @@ void main() {
     );
 
     for (int i = 0; i < 4; i++) {
-      _expectSize(i, const Size(200, 150));
+      expectSize(i, const Size(200, 150));
     }
   });
 
-  testWidgets('Should have a gap of the specified size between children',
-      (tester) async {
+  testWidgets('Should have a gap of the specified size between children', (
+    tester,
+  ) async {
     // Screen size is 800x600 in the test environment.
     await tester.pumpWidget(
       Align(
@@ -136,14 +137,14 @@ void main() {
       ),
     );
 
-    void _expectTopLeft(int index, Offset topLeft) {
+    void expectTopLeft(int index, Offset topLeft) {
       expect(tester.getTopLeft(find.text('$index')), equals(topLeft));
     }
 
-    _expectTopLeft(0, const Offset(0, 0));
-    _expectTopLeft(1, const Offset(201, 0));
-    _expectTopLeft(2, const Offset(402, 0));
-    _expectTopLeft(3, const Offset(603, 0));
+    expectTopLeft(0, const Offset(0, 0));
+    expectTopLeft(1, const Offset(201, 0));
+    expectTopLeft(2, const Offset(402, 0));
+    expectTopLeft(3, const Offset(603, 0));
 
     await tester.pumpWidget(
       Align(
@@ -165,70 +166,71 @@ void main() {
       ),
     );
 
-    _expectTopLeft(0, const Offset(0, 0));
-    _expectTopLeft(1, const Offset(0, 151));
-    _expectTopLeft(2, const Offset(0, 302));
-    _expectTopLeft(3, const Offset(0, 453));
+    expectTopLeft(0, const Offset(0, 0));
+    expectTopLeft(1, const Offset(0, 151));
+    expectTopLeft(2, const Offset(0, 302));
+    expectTopLeft(3, const Offset(0, 453));
   });
 
   testWidgets(
-      'Should divide the available space following the division parameter',
-      (tester) async {
-    // Screen size is 800x600 in the test environment.
-    await tester.pumpWidget(
-      Align(
-        alignment: Alignment.topLeft,
-        child: Directionality(
-          textDirection: TextDirection.ltr,
-          child: UniformTrack(
-            division: 4,
-            direction: AxisDirection.right,
-            children: const [
-              Tile(index: 0, height: 100),
-              Tile(index: 1, height: 200),
-            ],
+    'Should divide the available space following the division parameter',
+    (tester) async {
+      // Screen size is 800x600 in the test environment.
+      await tester.pumpWidget(
+        Align(
+          alignment: Alignment.topLeft,
+          child: Directionality(
+            textDirection: TextDirection.ltr,
+            child: UniformTrack(
+              division: 4,
+              direction: AxisDirection.right,
+              children: const [
+                Tile(index: 0, height: 100),
+                Tile(index: 1, height: 200),
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
 
-    void _expectTopLeft(int index, Offset topLeft) {
-      expect(tester.getTopLeft(find.text('$index')), equals(topLeft));
-    }
+      void expectTopLeft(int index, Offset topLeft) {
+        expect(tester.getTopLeft(find.text('$index')), equals(topLeft));
+      }
 
-    void _expectSize(int index, Size size) {
-      expect(tester.getSize(find.text('$index')), equals(size));
-    }
+      void expectSize(int index, Size size) {
+        expect(tester.getSize(find.text('$index')), equals(size));
+      }
 
-    for (int i = 0; i < 2; i++) {
-      _expectSize(i, const Size(200, 200));
-    }
+      for (int i = 0; i < 2; i++) {
+        expectSize(i, const Size(200, 200));
+      }
 
-    _expectTopLeft(0, const Offset(0, 0));
-    _expectTopLeft(1, const Offset(200, 0));
+      expectTopLeft(0, const Offset(0, 0));
+      expectTopLeft(1, const Offset(200, 0));
 
-    await tester.pumpWidget(
-      Align(
-        alignment: Alignment.topLeft,
-        child: Directionality(
-          textDirection: TextDirection.ltr,
-          child: UniformTrack(
-            division: 4,
-            direction: AxisDirection.down,
-            children: const [
-              Tile(index: 0, width: 100),
-              Tile(index: 1, width: 200),
-            ],
+      await tester.pumpWidget(
+        Align(
+          alignment: Alignment.topLeft,
+          child: Directionality(
+            textDirection: TextDirection.ltr,
+            child: UniformTrack(
+              division: 4,
+              direction: AxisDirection.down,
+              children: const [
+                Tile(index: 0, width: 100),
+                Tile(index: 1, width: 200),
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
 
-    for (int i = 0; i < 2; i++) {
-      _expectSize(i, const Size(200, 150));
-    }
+      for (int i = 0; i < 2; i++) {
+        expectSize(i, const Size(200, 150));
+      }
 
-    _expectTopLeft(0, const Offset(0, 0));
-    _expectTopLeft(1, const Offset(0, 150));
-  });
+      expectTopLeft(0, const Offset(0, 0));
+      expectTopLeft(1, const Offset(0, 150));
+    },
+  );
 }

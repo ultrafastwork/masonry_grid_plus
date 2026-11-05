@@ -34,11 +34,11 @@ void main() {
       ),
     );
 
-    void _expectSize(int index, Size size) {
+    void expectSize(int index, Size size) {
       expect(tester.getSize(find.text('$index')), equals(size));
     }
 
-    void _expectTopLeft(int index, Offset topLeft) {
+    void expectTopLeft(int index, Offset topLeft) {
       final actualOffset = tester.getTopLeft(find.text('$index'));
       expect(
         actualOffset.dx,
@@ -54,19 +54,20 @@ void main() {
     const s2 = s1 * 0.9;
     const s3 = s2 * 7 / 5;
 
-    _expectSize(0, const Size(s1, s1));
-    _expectSize(1, const Size(s2, s3));
-    _expectSize(2, const Size(s2, s3));
-    _expectSize(3, const Size(s1, s1));
+    expectSize(0, const Size(s1, s1));
+    expectSize(1, const Size(s2, s3));
+    expectSize(2, const Size(s2, s3));
+    expectSize(3, const Size(s1, s1));
 
-    _expectTopLeft(0, const Offset(0, (s3 - s1) / 2));
-    _expectTopLeft(1, const Offset(s1 + 8 + 0.1 * s1, 0));
-    _expectTopLeft(2, const Offset(0, s3 + 8));
-    _expectTopLeft(3, const Offset(s1 + 8, s3 + 8 + (s3 - s1) / 2));
+    expectTopLeft(0, const Offset(0, (s3 - s1) / 2));
+    expectTopLeft(1, const Offset(s1 + 8 + 0.1 * s1, 0));
+    expectTopLeft(2, const Offset(0, s3 + 8));
+    expectTopLeft(3, const Offset(s1 + 8, s3 + 8 + (s3 - s1) / 2));
   });
 
-  testWidgets('Woven layout should follow an opposite flow',
-      (WidgetTester tester) async {
+  testWidgets('Woven layout should follow an opposite flow', (
+    WidgetTester tester,
+  ) async {
     await binding.setSurfaceSize(const Size(412, 800));
     await tester.pumpWidget(
       Directionality(
@@ -78,14 +79,8 @@ void main() {
             crossAxisSpacing: 4,
             pattern: const [
               WovenGridTile(1),
-              WovenGridTile(
-                6 / 10,
-                crossAxisRatio: 0.9,
-              ),
-              WovenGridTile(
-                3 / 4,
-                crossAxisRatio: 0.9,
-              ),
+              WovenGridTile(6 / 10, crossAxisRatio: 0.9),
+              WovenGridTile(3 / 4, crossAxisRatio: 0.9),
             ],
           ),
           childrenDelegate: SliverChildBuilderDelegate(
@@ -95,11 +90,11 @@ void main() {
       ),
     );
 
-    void _expectSize(int index, Size size) {
+    void expectSize(int index, Size size) {
       expect(tester.getSize(find.text('$index')), equals(size));
     }
 
-    void _expectTopLeft(int index, Offset topLeft) {
+    void expectTopLeft(int index, Offset topLeft) {
       final actualOffset = tester.getTopLeft(find.text('$index'));
       expect(
         actualOffset.dx,
@@ -116,23 +111,23 @@ void main() {
     const s3 = s2 * 10 / 6;
     const s4 = s2 * 4 / 3;
 
-    _expectSize(0, const Size(s1, s1));
-    _expectSize(1, const Size(s2, s3));
-    _expectSize(2, const Size(s2, s4));
-    _expectSize(3, const Size(s1, s1));
-    _expectSize(4, const Size(s2, s3));
-    _expectSize(5, const Size(s1, s1));
-    _expectSize(6, const Size(s2, s4));
-    _expectSize(7, const Size(s2, s3));
+    expectSize(0, const Size(s1, s1));
+    expectSize(1, const Size(s2, s3));
+    expectSize(2, const Size(s2, s4));
+    expectSize(3, const Size(s1, s1));
+    expectSize(4, const Size(s2, s3));
+    expectSize(5, const Size(s1, s1));
+    expectSize(6, const Size(s2, s4));
+    expectSize(7, const Size(s2, s3));
 
-    _expectTopLeft(0, const Offset(0, 25));
-    _expectTopLeft(1, const Offset(104 + 5, 0));
-    _expectTopLeft(2, const Offset(208 + 5, 15));
-    _expectTopLeft(3, const Offset(312, 25));
-    _expectTopLeft(4, const Offset(5, 154));
-    _expectTopLeft(5, const Offset(104, 154 + 25));
-    _expectTopLeft(6, const Offset(208 + 5, 154 + 15));
-    _expectTopLeft(7, const Offset(312 + 5, 154));
+    expectTopLeft(0, const Offset(0, 25));
+    expectTopLeft(1, const Offset(104 + 5, 0));
+    expectTopLeft(2, const Offset(208 + 5, 15));
+    expectTopLeft(3, const Offset(312, 25));
+    expectTopLeft(4, const Offset(5, 154));
+    expectTopLeft(5, const Offset(104, 154 + 25));
+    expectTopLeft(6, const Offset(208 + 5, 154 + 15));
+    expectTopLeft(7, const Offset(312 + 5, 154));
   });
 
   test('computeMaxScrollOffset should be right', () {

@@ -1,16 +1,14 @@
 import 'dart:math' as math;
 
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
 
 /// Represents the geometries of each tile of a pattern.
 @immutable
 class SliverPatternGridGeometries {
   /// Creates a [SliverPatternGridGeometries].
-  const SliverPatternGridGeometries({
-    required this.tiles,
-    required this.bounds,
-  }) : assert(tiles.length == bounds.length);
+  const SliverPatternGridGeometries({required this.tiles, required this.bounds})
+    : assert(tiles.length == bounds.length);
 
   /// The visible geometries of each tile.
   final List<SliverGridGeometry> tiles;
@@ -27,12 +25,12 @@ abstract class SliverPatternGridDelegate<T> extends SliverGridDelegate {
     this.crossAxisSpacing = 0,
     this.crossAxisCount,
     this.maxCrossAxisExtent,
-  })  : assert(mainAxisSpacing >= 0),
-        assert(crossAxisSpacing >= 0),
-        assert(crossAxisCount == null || crossAxisCount > 0),
-        assert(maxCrossAxisExtent == null || maxCrossAxisExtent > 0),
-        assert(crossAxisCount != null || maxCrossAxisExtent != null),
-        tileCount = pattern.length;
+  }) : assert(mainAxisSpacing >= 0),
+       assert(crossAxisSpacing >= 0),
+       assert(crossAxisCount == null || crossAxisCount > 0),
+       assert(maxCrossAxisExtent == null || maxCrossAxisExtent > 0),
+       assert(crossAxisCount != null || maxCrossAxisExtent != null),
+       tileCount = pattern.length;
 
   /// Creates a [SliverPatternGridDelegate] with a [crossAxisCount].
   const SliverPatternGridDelegate.count({
@@ -41,11 +39,11 @@ abstract class SliverPatternGridDelegate<T> extends SliverGridDelegate {
     double mainAxisSpacing = 0,
     double crossAxisSpacing = 0,
   }) : this._(
-          pattern: pattern,
-          mainAxisSpacing: mainAxisSpacing,
-          crossAxisSpacing: crossAxisSpacing,
-          crossAxisCount: crossAxisCount,
-        );
+         pattern: pattern,
+         mainAxisSpacing: mainAxisSpacing,
+         crossAxisSpacing: crossAxisSpacing,
+         crossAxisCount: crossAxisCount,
+       );
 
   /// Creates a [SliverPatternGridDelegate] with a [maxCrossAxisExtent].
   const SliverPatternGridDelegate.extent({
@@ -54,11 +52,11 @@ abstract class SliverPatternGridDelegate<T> extends SliverGridDelegate {
     double mainAxisSpacing = 0,
     double crossAxisSpacing = 0,
   }) : this._(
-          pattern: pattern,
-          mainAxisSpacing: mainAxisSpacing,
-          crossAxisSpacing: crossAxisSpacing,
-          maxCrossAxisExtent: maxCrossAxisExtent,
-        );
+         pattern: pattern,
+         mainAxisSpacing: mainAxisSpacing,
+         crossAxisSpacing: crossAxisSpacing,
+         maxCrossAxisExtent: maxCrossAxisExtent,
+       );
 
   /// {@macro fsgv.global.mainAxisSpacing}
   final double mainAxisSpacing;
@@ -86,8 +84,9 @@ abstract class SliverPatternGridDelegate<T> extends SliverGridDelegate {
   );
 
   @override
-  _SliverPatternGridLayout getLayout(SliverConstraints constraints) {
-    final crossAxisCount = this.crossAxisCount ??
+  SliverGridLayout getLayout(SliverConstraints constraints) {
+    final crossAxisCount =
+        this.crossAxisCount ??
         (constraints.crossAxisExtent / (maxCrossAxisExtent! + crossAxisSpacing))
             .ceil();
     final geometries = getGeometries(constraints, crossAxisCount);
@@ -101,10 +100,14 @@ abstract class SliverPatternGridDelegate<T> extends SliverGridDelegate {
   }
 
   @override
-  bool shouldRelayout(SliverPatternGridDelegate oldDelegate) {
-    return oldDelegate.pattern != pattern ||
+  bool shouldRelayout(covariant SliverPatternGridDelegate<T> oldDelegate) {
+    // Compare patterns by value: widgets typically pass a new list literal on
+    // every build, and an identity check would force a full relayout each time.
+    return !listEquals(oldDelegate.pattern, pattern) ||
         oldDelegate.mainAxisSpacing != mainAxisSpacing ||
-        oldDelegate.crossAxisSpacing != crossAxisSpacing;
+        oldDelegate.crossAxisSpacing != crossAxisSpacing ||
+        oldDelegate.crossAxisCount != crossAxisCount ||
+        oldDelegate.maxCrossAxisExtent != maxCrossAxisExtent;
   }
 }
 
@@ -115,9 +118,9 @@ class _SliverPatternGridLayout extends SliverGridLayout {
     required this.bounds,
     required this.crossAxisExtent,
     this.reverseCrossAxis = false,
-  })  : tileCount = tiles.length,
-        patternMainAxisExtent =
-            bounds.last.trailingScrollOffset + mainAxisSpacing;
+  }) : tileCount = tiles.length,
+       patternMainAxisExtent =
+           bounds.last.trailingScrollOffset + mainAxisSpacing;
 
   final double mainAxisSpacing;
   final double crossAxisExtent;
@@ -167,7 +170,8 @@ class _SliverPatternGridLayout extends SliverGridLayout {
     if (reverseCrossAxis) {
       return SliverGridGeometry(
         scrollOffset: realRect.scrollOffset,
-        crossAxisOffset: crossAxisExtent -
+        crossAxisOffset:
+            crossAxisExtent -
             realRect.crossAxisOffset -
             realRect.crossAxisExtent,
         mainAxisExtent: realRect.mainAxisExtent,

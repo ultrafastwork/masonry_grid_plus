@@ -30,11 +30,11 @@ void main() {
       ),
     );
 
-    void _expectSize(int index, Size size) {
+    void expectSize(int index, Size size) {
       expect(tester.getSize(find.text('$index')), equals(size));
     }
 
-    void _expectTopLeft(int index, Offset topLeft) {
+    void expectTopLeft(int index, Offset topLeft) {
       final actualOffset = tester.getTopLeft(find.text('$index'));
       expect(
         actualOffset.dx,
@@ -48,12 +48,12 @@ void main() {
 
     const s1 = 376.0;
 
-    _expectSize(0, const Size(s1, s1));
-    _expectSize(1, const Size(s1, s1 / (3 / 4)));
-    _expectSize(2, const Size(704, 704 / (10 / 4)));
+    expectSize(0, const Size(s1, s1));
+    expectSize(1, const Size(s1, s1 / (3 / 4)));
+    expectSize(2, const Size(704, 704 / (10 / 4)));
 
-    _expectTopLeft(0, const Offset(s1 + 48, 0));
-    _expectTopLeft(1, const Offset(0, 24));
-    _expectTopLeft(2, const Offset(48, s1 / (3 / 4) + 48));
+    expectTopLeft(0, const Offset(s1 + 48, 0));
+    expectTopLeft(1, const Offset(0, 24));
+    expectTopLeft(2, const Offset(48, s1 / (3 / 4) + 48));
   });
 }

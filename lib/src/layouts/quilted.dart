@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
 import 'package:masonry_grid_plus/src/foundation/extensions.dart';
 
@@ -8,17 +8,25 @@ import 'package:masonry_grid_plus/src/foundation/extensions.dart';
 @immutable
 class QuiltedGridTile {
   /// Create a [QuiltedGridTile].
-  const QuiltedGridTile(
-    this.mainAxisCount,
-    this.crossAxisCount,
-  )   : assert(mainAxisCount > 0),
-        assert(crossAxisCount > 0);
+  const QuiltedGridTile(this.mainAxisCount, this.crossAxisCount)
+    : assert(mainAxisCount > 0),
+      assert(crossAxisCount > 0);
 
   /// The number of cells that tile takes in the main axis.
   final int mainAxisCount;
 
   /// The number of cells that tile takes in the cross axis.
   final int crossAxisCount;
+
+  @override
+  bool operator ==(Object other) {
+    return other is QuiltedGridTile &&
+        other.mainAxisCount == mainAxisCount &&
+        other.crossAxisCount == crossAxisCount;
+  }
+
+  @override
+  int get hashCode => Object.hash(mainAxisCount, crossAxisCount);
 
   @override
   String toString() {
@@ -35,11 +43,12 @@ class SliverQuiltedGridDelegate extends SliverGridDelegate {
     this.repeatPattern = QuiltedGridRepeatPattern.same,
     this.mainAxisSpacing = 0,
     this.crossAxisSpacing = 0,
-  })  : assert(crossAxisCount > 0),
-        assert(mainAxisSpacing >= 0),
-        assert(crossAxisSpacing >= 0),
-        assert(pattern.isNotEmpty),
-        _pattern = pattern.toPattern(crossAxisCount, repeatPattern);
+  }) : assert(crossAxisCount > 0),
+       assert(mainAxisSpacing >= 0),
+       assert(crossAxisSpacing >= 0),
+       assert(pattern.isNotEmpty),
+       _sourcePattern = pattern,
+       _pattern = pattern.toPattern(crossAxisCount, repeatPattern);
 
   /// {@macro fsgv.global.crossAxisCount}
   final int crossAxisCount;
@@ -55,12 +64,15 @@ class SliverQuiltedGridDelegate extends SliverGridDelegate {
   /// {@macro fsgv.global.crossAxisSpacing}
   final double crossAxisSpacing;
 
+  final List<QuiltedGridTile> _sourcePattern;
+
   final _QuiltedTilePattern _pattern;
 
   @override
-  _SliverQuiltedGridLayout getLayout(SliverConstraints constraints) {
+  SliverGridLayout getLayout(SliverConstraints constraints) {
     final crossAxisExtent = constraints.crossAxisExtent;
-    final cellExtent = (crossAxisExtent + crossAxisSpacing) / crossAxisCount -
+    final cellExtent =
+        (crossAxisExtent + crossAxisSpacing) / crossAxisCount -
         crossAxisSpacing;
     return _SliverQuiltedGridLayout(
       cellExtent: cellExtent,
@@ -76,7 +88,9 @@ class SliverQuiltedGridDelegate extends SliverGridDelegate {
   bool shouldRelayout(SliverQuiltedGridDelegate oldDelegate) {
     return oldDelegate.crossAxisCount != crossAxisCount ||
         oldDelegate.mainAxisSpacing != mainAxisSpacing ||
-        oldDelegate.crossAxisSpacing != crossAxisSpacing;
+        oldDelegate.crossAxisSpacing != crossAxisSpacing ||
+        oldDelegate.repeatPattern != repeatPattern ||
+        !listEquals(oldDelegate._sourcePattern, _sourcePattern);
   }
 }
 
@@ -139,11 +153,11 @@ class _SliverQuiltedGridLayout extends SliverGridLayout {
     required this.crossAxisSpacing,
     required this.pattern,
     required this.reverseCrossAxis,
-  })  : assert(cellExtent > 0),
-        assert(mainAxisSpacing >= 0),
-        assert(crossAxisSpacing >= 0),
-        mainAxisStride = cellExtent + mainAxisSpacing,
-        crossAxisStride = cellExtent + crossAxisSpacing;
+  }) : assert(cellExtent > 0),
+       assert(mainAxisSpacing >= 0),
+       assert(crossAxisSpacing >= 0),
+       mainAxisStride = cellExtent + mainAxisSpacing,
+       crossAxisStride = cellExtent + crossAxisSpacing;
 
   final double crossAxisExtent;
 
@@ -225,8 +239,9 @@ class _SliverQuiltedGridLayout extends SliverGridLayout {
     double crossAxisStart,
     double childCrossAxisExtent,
   ) {
-    if (reverseCrossAxis)
+    if (reverseCrossAxis) {
       return crossAxisExtent - crossAxisStart - childCrossAxisExtent;
+    }
     return crossAxisStart;
   }
 
@@ -429,8 +444,9 @@ extension on List<QuiltedGridTile> {
     );
     final tiles = toList();
     if (repeatedIndexes.isNotEmpty) {
-      final repeatedTiles =
-          repeatedIndexes.map((index) => this[index]).toList();
+      final repeatedTiles = repeatedIndexes
+          .map((index) => this[index])
+          .toList();
       position(repeatedTiles, null, length);
       tiles.addAll(repeatedTiles);
     }

@@ -1,5 +1,4 @@
-import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:masonry_grid_plus/src/rendering/sliver_simple_grid_delegate.dart';
 import 'package:masonry_grid_plus/src/widgets/sliver_masonry_grid.dart';
 
@@ -33,7 +32,7 @@ import 'package:masonry_grid_plus/src/widgets/sliver_masonry_grid.dart';
 ///
 /// If [MasonryGridView] is no longer sufficient, for example because the scroll
 /// view is to have both a grid and a list, or because the grid is to be
-/// combined with a [SliverAppBar], etc, it is straight-forward to port code
+/// combined with a `SliverAppBar`, etc, it is straight-forward to port code
 /// from using [MasonryGridView] to using [CustomScrollView] directly.
 ///
 /// The [key], [scrollDirection], [reverse], [controller], [primary], [physics],
@@ -65,7 +64,7 @@ import 'package:masonry_grid_plus/src/widgets/sliver_masonry_grid.dart';
 /// the [SliverGrid] instead be a child of the [SliverPadding].
 ///
 /// Once code has been ported to use [CustomScrollView], other slivers, such as
-/// [SliverList] or [SliverAppBar], can be put in the [CustomScrollView.slivers]
+/// [SliverList] or `SliverAppBar`, can be put in the [CustomScrollView.slivers]
 /// list.
 ///
 /// By default, [MasonryGridView] will automatically pad the limits of the
@@ -81,14 +80,14 @@ class MasonryGridView extends BoxScrollView {
   /// `addRepaintBoundaries` argument corresponds to the
   /// [SliverChildListDelegate.addRepaintBoundaries] property.
   MasonryGridView({
-    Key? key,
-    Axis scrollDirection = Axis.vertical,
-    bool reverse = false,
-    ScrollController? controller,
-    bool? primary,
-    ScrollPhysics? physics,
-    bool shrinkWrap = false,
-    EdgeInsetsGeometry? padding,
+    super.key,
+    super.scrollDirection,
+    super.reverse,
+    super.controller,
+    super.primary,
+    super.physics,
+    super.shrinkWrap,
+    super.padding,
     required this.gridDelegate,
     this.mainAxisSpacing = 0.0,
     this.crossAxisSpacing = 0.0,
@@ -103,32 +102,18 @@ class MasonryGridView extends BoxScrollView {
     super.scrollCacheExtent,
     List<Widget> children = const <Widget>[],
     int? semanticChildCount,
-    DragStartBehavior dragStartBehavior = DragStartBehavior.start,
-    Clip clipBehavior = Clip.hardEdge,
-    ScrollViewKeyboardDismissBehavior keyboardDismissBehavior =
+    super.dragStartBehavior,
+    super.clipBehavior,
+    ScrollViewKeyboardDismissBehavior super.keyboardDismissBehavior =
         ScrollViewKeyboardDismissBehavior.manual,
-    String? restorationId,
-  })  : childrenDelegate = SliverChildListDelegate(
-          children,
-          addAutomaticKeepAlives: addAutomaticKeepAlives,
-          addRepaintBoundaries: addRepaintBoundaries,
-          addSemanticIndexes: addSemanticIndexes,
-        ),
-        super(
-          key: key,
-          scrollDirection: scrollDirection,
-          reverse: reverse,
-          controller: controller,
-          primary: primary,
-          physics: physics,
-          shrinkWrap: shrinkWrap,
-          padding: padding,
-          semanticChildCount: semanticChildCount ?? children.length,
-          dragStartBehavior: dragStartBehavior,
-          keyboardDismissBehavior: keyboardDismissBehavior,
-          restorationId: restorationId,
-          clipBehavior: clipBehavior,
-        );
+    super.restorationId,
+  }) : childrenDelegate = SliverChildListDelegate(
+         children,
+         addAutomaticKeepAlives: addAutomaticKeepAlives,
+         addRepaintBoundaries: addRepaintBoundaries,
+         addSemanticIndexes: addSemanticIndexes,
+       ),
+       super(semanticChildCount: semanticChildCount ?? children.length);
 
   /// Creates a scrollable, 2D array of widgets that are created on demand and
   /// placed according to a masonry layout.
@@ -146,14 +131,14 @@ class MasonryGridView extends BoxScrollView {
   /// [SliverChildBuilderDelegate.addRepaintBoundaries] property. Both must not
   /// be null.
   MasonryGridView.builder({
-    Key? key,
-    Axis scrollDirection = Axis.vertical,
-    bool reverse = false,
-    ScrollController? controller,
-    bool? primary,
-    ScrollPhysics? physics,
-    bool shrinkWrap = false,
-    EdgeInsetsGeometry? padding,
+    super.key,
+    super.scrollDirection,
+    super.reverse,
+    super.controller,
+    super.primary,
+    super.physics,
+    super.shrinkWrap,
+    super.padding,
     required this.gridDelegate,
     required IndexedWidgetBuilder itemBuilder,
     int? itemCount,
@@ -169,33 +154,19 @@ class MasonryGridView extends BoxScrollView {
     super.cacheExtent,
     super.scrollCacheExtent,
     int? semanticChildCount,
-    DragStartBehavior dragStartBehavior = DragStartBehavior.start,
-    ScrollViewKeyboardDismissBehavior keyboardDismissBehavior =
+    super.dragStartBehavior,
+    ScrollViewKeyboardDismissBehavior super.keyboardDismissBehavior =
         ScrollViewKeyboardDismissBehavior.manual,
-    String? restorationId,
-    Clip clipBehavior = Clip.hardEdge,
-  })  : childrenDelegate = SliverChildBuilderDelegate(
-          itemBuilder,
-          childCount: itemCount,
-          addAutomaticKeepAlives: addAutomaticKeepAlives,
-          addRepaintBoundaries: addRepaintBoundaries,
-          addSemanticIndexes: addSemanticIndexes,
-        ),
-        super(
-          key: key,
-          scrollDirection: scrollDirection,
-          reverse: reverse,
-          controller: controller,
-          primary: primary,
-          physics: physics,
-          shrinkWrap: shrinkWrap,
-          padding: padding,
-          semanticChildCount: semanticChildCount ?? itemCount,
-          dragStartBehavior: dragStartBehavior,
-          keyboardDismissBehavior: keyboardDismissBehavior,
-          restorationId: restorationId,
-          clipBehavior: clipBehavior,
-        );
+    super.restorationId,
+    super.clipBehavior,
+  }) : childrenDelegate = SliverChildBuilderDelegate(
+         itemBuilder,
+         childCount: itemCount,
+         addAutomaticKeepAlives: addAutomaticKeepAlives,
+         addRepaintBoundaries: addRepaintBoundaries,
+         addSemanticIndexes: addSemanticIndexes,
+       ),
+       super(semanticChildCount: semanticChildCount ?? itemCount);
 
   /// Creates a scrollable, 2D array of widgets with both a custom
   /// [SliverSimpleGridDelegate] and a custom [SliverChildDelegate].
@@ -204,14 +175,14 @@ class MasonryGridView extends BoxScrollView {
   /// a [SliverChildBuilderDelegate] or use [MasonryGridView.builder],
   ///  [MasonryGridView.count] or [MasonryGridView.extent] constructors.
   const MasonryGridView.custom({
-    Key? key,
-    Axis scrollDirection = Axis.vertical,
-    bool reverse = false,
-    ScrollController? controller,
-    bool? primary,
-    ScrollPhysics? physics,
-    bool shrinkWrap = false,
-    EdgeInsetsGeometry? padding,
+    super.key,
+    super.scrollDirection,
+    super.reverse,
+    super.controller,
+    super.primary,
+    super.physics,
+    super.shrinkWrap,
+    super.padding,
     required this.gridDelegate,
     required this.childrenDelegate,
     this.mainAxisSpacing = 0.0,
@@ -222,27 +193,13 @@ class MasonryGridView extends BoxScrollView {
     )
     super.cacheExtent,
     super.scrollCacheExtent,
-    int? semanticChildCount,
-    DragStartBehavior dragStartBehavior = DragStartBehavior.start,
-    ScrollViewKeyboardDismissBehavior keyboardDismissBehavior =
+    super.semanticChildCount,
+    super.dragStartBehavior,
+    ScrollViewKeyboardDismissBehavior super.keyboardDismissBehavior =
         ScrollViewKeyboardDismissBehavior.manual,
-    String? restorationId,
-    Clip clipBehavior = Clip.hardEdge,
-  }) : super(
-          key: key,
-          scrollDirection: scrollDirection,
-          reverse: reverse,
-          controller: controller,
-          primary: primary,
-          physics: physics,
-          shrinkWrap: shrinkWrap,
-          padding: padding,
-          semanticChildCount: semanticChildCount,
-          dragStartBehavior: dragStartBehavior,
-          keyboardDismissBehavior: keyboardDismissBehavior,
-          restorationId: restorationId,
-          clipBehavior: clipBehavior,
-        );
+    super.restorationId,
+    super.clipBehavior,
+  });
 
   /// Creates a scrollable, 2D array of widgets with a fixed number of tiles in
   /// the cross axis.
@@ -260,14 +217,14 @@ class MasonryGridView extends BoxScrollView {
   ///  * [SliverMasonryGrid.count], the equivalent constructor for
   ///    [SliverMasonryGrid].
   MasonryGridView.count({
-    Key? key,
-    Axis scrollDirection = Axis.vertical,
-    bool reverse = false,
-    ScrollController? controller,
-    bool? primary,
-    ScrollPhysics? physics,
-    bool shrinkWrap = false,
-    EdgeInsetsGeometry? padding,
+    super.key,
+    super.scrollDirection,
+    super.reverse,
+    super.controller,
+    super.primary,
+    super.physics,
+    super.shrinkWrap,
+    super.padding,
     required int crossAxisCount,
     this.mainAxisSpacing = 0.0,
     this.crossAxisSpacing = 0.0,
@@ -283,36 +240,22 @@ class MasonryGridView extends BoxScrollView {
     super.cacheExtent,
     super.scrollCacheExtent,
     int? semanticChildCount,
-    DragStartBehavior dragStartBehavior = DragStartBehavior.start,
-    ScrollViewKeyboardDismissBehavior keyboardDismissBehavior =
+    super.dragStartBehavior,
+    ScrollViewKeyboardDismissBehavior super.keyboardDismissBehavior =
         ScrollViewKeyboardDismissBehavior.manual,
-    String? restorationId,
-    Clip clipBehavior = Clip.hardEdge,
-  })  : gridDelegate = SliverSimpleGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: crossAxisCount,
-        ),
-        childrenDelegate = SliverChildBuilderDelegate(
-          itemBuilder,
-          childCount: itemCount,
-          addAutomaticKeepAlives: addAutomaticKeepAlives,
-          addRepaintBoundaries: addRepaintBoundaries,
-          addSemanticIndexes: addSemanticIndexes,
-        ),
-        super(
-          key: key,
-          scrollDirection: scrollDirection,
-          reverse: reverse,
-          controller: controller,
-          primary: primary,
-          physics: physics,
-          shrinkWrap: shrinkWrap,
-          padding: padding,
-          semanticChildCount: semanticChildCount ?? itemCount,
-          dragStartBehavior: dragStartBehavior,
-          keyboardDismissBehavior: keyboardDismissBehavior,
-          restorationId: restorationId,
-          clipBehavior: clipBehavior,
-        );
+    super.restorationId,
+    super.clipBehavior,
+  }) : gridDelegate = SliverSimpleGridDelegateWithFixedCrossAxisCount(
+         crossAxisCount: crossAxisCount,
+       ),
+       childrenDelegate = SliverChildBuilderDelegate(
+         itemBuilder,
+         childCount: itemCount,
+         addAutomaticKeepAlives: addAutomaticKeepAlives,
+         addRepaintBoundaries: addRepaintBoundaries,
+         addSemanticIndexes: addSemanticIndexes,
+       ),
+       super(semanticChildCount: semanticChildCount ?? itemCount);
 
   /// Creates a scrollable, 2D array of widgets with tiles that each have a
   /// maximum cross-axis extent.
@@ -330,14 +273,14 @@ class MasonryGridView extends BoxScrollView {
   ///  * [SliverMasonryGrid.extent], the equivalent constructor for
   ///    [SliverMasonryGrid].
   MasonryGridView.extent({
-    Key? key,
-    Axis scrollDirection = Axis.vertical,
-    bool reverse = false,
-    ScrollController? controller,
-    bool? primary,
-    ScrollPhysics? physics,
-    bool shrinkWrap = false,
-    EdgeInsetsGeometry? padding,
+    super.key,
+    super.scrollDirection,
+    super.reverse,
+    super.controller,
+    super.primary,
+    super.physics,
+    super.shrinkWrap,
+    super.padding,
     required double maxCrossAxisExtent,
     this.mainAxisSpacing = 0.0,
     this.crossAxisSpacing = 0.0,
@@ -353,36 +296,22 @@ class MasonryGridView extends BoxScrollView {
     super.cacheExtent,
     super.scrollCacheExtent,
     int? semanticChildCount,
-    DragStartBehavior dragStartBehavior = DragStartBehavior.start,
-    ScrollViewKeyboardDismissBehavior keyboardDismissBehavior =
+    super.dragStartBehavior,
+    ScrollViewKeyboardDismissBehavior super.keyboardDismissBehavior =
         ScrollViewKeyboardDismissBehavior.manual,
-    String? restorationId,
-    Clip clipBehavior = Clip.hardEdge,
-  })  : gridDelegate = SliverSimpleGridDelegateWithMaxCrossAxisExtent(
-          maxCrossAxisExtent: maxCrossAxisExtent,
-        ),
-        childrenDelegate = SliverChildBuilderDelegate(
-          itemBuilder,
-          childCount: itemCount,
-          addAutomaticKeepAlives: addAutomaticKeepAlives,
-          addRepaintBoundaries: addRepaintBoundaries,
-          addSemanticIndexes: addSemanticIndexes,
-        ),
-        super(
-          key: key,
-          scrollDirection: scrollDirection,
-          reverse: reverse,
-          controller: controller,
-          primary: primary,
-          physics: physics,
-          shrinkWrap: shrinkWrap,
-          padding: padding,
-          semanticChildCount: semanticChildCount ?? itemCount,
-          dragStartBehavior: dragStartBehavior,
-          keyboardDismissBehavior: keyboardDismissBehavior,
-          restorationId: restorationId,
-          clipBehavior: clipBehavior,
-        );
+    super.restorationId,
+    super.clipBehavior,
+  }) : gridDelegate = SliverSimpleGridDelegateWithMaxCrossAxisExtent(
+         maxCrossAxisExtent: maxCrossAxisExtent,
+       ),
+       childrenDelegate = SliverChildBuilderDelegate(
+         itemBuilder,
+         childCount: itemCount,
+         addAutomaticKeepAlives: addAutomaticKeepAlives,
+         addRepaintBoundaries: addRepaintBoundaries,
+         addSemanticIndexes: addSemanticIndexes,
+       ),
+       super(semanticChildCount: semanticChildCount ?? itemCount);
 
   /// A delegate that controls the layout of the children within the
   /// [MasonryGridView].

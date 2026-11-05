@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
 import 'package:masonry_grid_plus/src/foundation/constants.dart';
 import 'package:masonry_grid_plus/src/layouts/sliver_patterned_grid_delegate.dart';
@@ -7,11 +7,9 @@ import 'package:masonry_grid_plus/src/layouts/sliver_patterned_grid_delegate.dar
 @immutable
 class StairedGridTile {
   /// Creates a [StairedGridTile].
-  const StairedGridTile(
-    this.crossAxisRatio,
-    this.aspectRatio,
-  )   : assert(crossAxisRatio > 0 && crossAxisRatio <= 1),
-        assert(aspectRatio > 0);
+  const StairedGridTile(this.crossAxisRatio, this.aspectRatio)
+    : assert(crossAxisRatio > 0 && crossAxisRatio <= 1),
+      assert(aspectRatio > 0);
 
   /// The amount of extent this tile is taking in the cross axis, according to
   /// the usable cross axis extent.
@@ -27,6 +25,16 @@ class StairedGridTile {
   final double aspectRatio;
 
   @override
+  bool operator ==(Object other) {
+    return other is StairedGridTile &&
+        other.crossAxisRatio == crossAxisRatio &&
+        other.aspectRatio == aspectRatio;
+  }
+
+  @override
+  int get hashCode => Object.hash(crossAxisRatio, aspectRatio);
+
+  @override
   String toString() {
     return 'StairedGridTile($crossAxisRatio, $aspectRatio)';
   }
@@ -37,18 +45,13 @@ class SliverStairedGridDelegate
     extends SliverPatternGridDelegate<StairedGridTile> {
   /// Creates a [SliverStairedGridDelegate].
   const SliverStairedGridDelegate({
-    required List<StairedGridTile> pattern,
-    double mainAxisSpacing = 0,
-    double crossAxisSpacing = 0,
+    required super.pattern,
+    super.mainAxisSpacing,
+    super.crossAxisSpacing,
     this.tileBottomSpace = 0,
     this.startCrossAxisDirectionReversed = false,
-  })  : assert(tileBottomSpace >= 0),
-        super.count(
-          pattern: pattern,
-          crossAxisCount: 1,
-          mainAxisSpacing: mainAxisSpacing,
-          crossAxisSpacing: crossAxisSpacing,
-        );
+  }) : assert(tileBottomSpace >= 0),
+       super.count(crossAxisCount: 1);
 
   /// {@template fsgv.global.tileBottomSpace}
   /// The number of logical pixels of the space below each tile.
@@ -71,11 +74,12 @@ class SliverStairedGridDelegate
     );
     int i = 0;
     double mainAxisOffset = 0;
-    double crossAxisOffset =
-        startCrossAxisDirectionReversed ? maxCrossAxisExtent : 0;
+    double crossAxisOffset = startCrossAxisDirectionReversed
+        ? maxCrossAxisExtent
+        : 0;
     bool reversed = startCrossAxisDirectionReversed;
     while (i < tileCount) {
-      int startIndex = i;
+      final int startIndex = i;
       double crossAxisRatioSum = 0;
       while (crossAxisRatioSum < 1 && i < tileCount) {
         crossAxisRatioSum += pattern[i].crossAxisRatio;
@@ -87,23 +91,27 @@ class SliverStairedGridDelegate
       }
       final tileBottomSpaceSum = tileBottomSpace * (i - startIndex);
       final isHorizontal = constraints.axis == Axis.horizontal;
-      final usableCrossAxisExtent = ((startIndex == 0
-                  ? maxCrossAxisExtent
-                  : maxCrossAxisExtent - crossAxisSpacing) -
-              (i - startIndex - 1) * crossAxisSpacing -
-              (i == tileCount ? crossAxisSpacing : 0) -
-              (isHorizontal ? tileBottomSpaceSum : 0))
-          .clamp(0, maxCrossAxisExtent);
+      final usableCrossAxisExtent =
+          ((startIndex == 0
+                      ? maxCrossAxisExtent
+                      : maxCrossAxisExtent - crossAxisSpacing) -
+                  (i - startIndex - 1) * crossAxisSpacing -
+                  (i == tileCount ? crossAxisSpacing : 0) -
+                  (isHorizontal ? tileBottomSpaceSum : 0))
+              .clamp(0, maxCrossAxisExtent);
 
       double targetMainAxisOffset = 0;
       for (int j = startIndex; j < i; j++) {
         final tile = pattern[j];
-        final crossAxisExtent = usableCrossAxisExtent * tile.crossAxisRatio +
+        final crossAxisExtent =
+            usableCrossAxisExtent * tile.crossAxisRatio +
             (isHorizontal ? tileBottomSpace : 0);
-        final mainAxisExtent = crossAxisExtent / tile.aspectRatio +
+        final mainAxisExtent =
+            crossAxisExtent / tile.aspectRatio +
             (isHorizontal ? 0 : tileBottomSpace);
-        crossAxisOffset =
-            reversed ? crossAxisOffset - crossAxisExtent : crossAxisOffset;
+        crossAxisOffset = reversed
+            ? crossAxisOffset - crossAxisExtent
+            : crossAxisOffset;
         final tileRect = SliverGridGeometry(
           scrollOffset: mainAxisOffset,
           crossAxisOffset: crossAxisOffset,
@@ -124,8 +132,9 @@ class SliverStairedGridDelegate
 
       mainAxisOffset = targetMainAxisOffset + mainAxisSpacing;
       reversed = !reversed;
-      crossAxisOffset =
-          reversed ? maxCrossAxisExtent - crossAxisSpacing : crossAxisSpacing;
+      crossAxisOffset = reversed
+          ? maxCrossAxisExtent - crossAxisSpacing
+          : crossAxisSpacing;
     }
 
     return SliverPatternGridGeometries(tiles: geometries, bounds: geometries);

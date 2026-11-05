@@ -15,13 +15,13 @@ class RenderUniformTrack extends RenderBox
     double spacing = 0,
     required int division,
     required AxisDirection direction,
-  })  : assert(spacing >= 0),
-        assert(division > 0),
-        _spacing = spacing,
-        _direction = direction,
-        _isHorizontal = axisDirectionToAxis(direction) == Axis.horizontal,
-        _isDirectionReversed = axisDirectionIsReversed(direction),
-        _division = division {
+  }) : assert(spacing >= 0),
+       assert(division > 0),
+       _spacing = spacing,
+       _direction = direction,
+       _isHorizontal = axisDirectionToAxis(direction) == Axis.horizontal,
+       _isDirectionReversed = axisDirectionIsReversed(direction),
+       _division = division {
     addAll(children);
   }
 
@@ -64,8 +64,9 @@ class RenderUniformTrack extends RenderBox
 
   @override
   void setupParentData(RenderBox child) {
-    if (child.parentData is! UniformTrackParentData)
+    if (child.parentData is! UniformTrackParentData) {
       child.parentData = UniformTrackParentData();
+    }
   }
 
   UniformTrackParentData _getParentData(RenderBox child) {
@@ -83,8 +84,9 @@ class RenderUniformTrack extends RenderBox
   }
 
   Size _computeSize(BoxConstraints constraints, ChildLayouter layoutChild) {
-    final mainAxisExtent =
-        _isHorizontal ? constraints.maxWidth : constraints.maxHeight;
+    final mainAxisExtent = _isHorizontal
+        ? constraints.maxWidth
+        : constraints.maxHeight;
     final childMainAxisExtent =
         ((mainAxisExtent + spacing) / division) - spacing;
     final childConstraints = _isHorizontal
@@ -108,7 +110,8 @@ class RenderUniformTrack extends RenderBox
       child = childAfter(child);
     }
 
-    return size = constraints.constrain(
+    // Must not assign [size] here: this also runs for dry layout.
+    return constraints.constrain(
       _isHorizontal
           ? Size(mainAxisExtent, maxChildCrossAxisExtent)
           : Size(maxChildCrossAxisExtent, mainAxisExtent),
@@ -118,8 +121,9 @@ class RenderUniformTrack extends RenderBox
   @override
   void performLayout() {
     size = _computeSize(constraints, ChildLayoutHelper.layoutChild);
-    final mainAxisExtent =
-        _isHorizontal ? constraints.maxWidth : constraints.maxHeight;
+    final mainAxisExtent = _isHorizontal
+        ? constraints.maxWidth
+        : constraints.maxHeight;
     final childMainAxisExtent =
         ((mainAxisExtent + spacing) / division) - spacing;
     final maxChildCrossAxisExtent = _isHorizontal ? size.height : size.width;
@@ -145,8 +149,9 @@ class RenderUniformTrack extends RenderBox
     int index = 0;
 
     double getMainAxisPosition(int index) {
-      final effectiveIndex =
-          _isDirectionReversed ? division - index - 1 : index;
+      final effectiveIndex = _isDirectionReversed
+          ? division - index - 1
+          : index;
       return effectiveIndex * stride;
     }
 
