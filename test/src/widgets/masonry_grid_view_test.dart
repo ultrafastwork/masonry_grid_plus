@@ -122,6 +122,11 @@ void main() {
     await binding.setSurfaceSize(const Size(600, 800));
     await tester.pump();
 
+    // The first visible item keeps its position on screen through the
+    // rotation, so scroll back to the start before checking the first items.
+    await tester.drag(find.byType(MasonryGridView), const Offset(0.0, 200.0));
+    await tester.pump();
+
     for (var i = 0; i < 10; i++) {
       final double h = ((i % 4) + 1) * 100;
       expect(tester.getSize(find.byKey(ValueKey(i))), equals(Size(200.0, h)));

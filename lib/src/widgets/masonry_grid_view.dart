@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:masonry_grid_plus/src/rendering/sliver_masonry_grid.dart';
 import 'package:masonry_grid_plus/src/rendering/sliver_simple_grid_delegate.dart';
 import 'package:masonry_grid_plus/src/widgets/sliver_masonry_grid.dart';
 
@@ -91,6 +92,7 @@ class MasonryGridView extends BoxScrollView {
     required this.gridDelegate,
     this.mainAxisSpacing = 0.0,
     this.crossAxisSpacing = 0.0,
+    this.relayoutBehavior = MasonryRelayoutBehavior.exact,
     bool addAutomaticKeepAlives = true,
     bool addRepaintBoundaries = true,
     bool addSemanticIndexes = true,
@@ -144,6 +146,7 @@ class MasonryGridView extends BoxScrollView {
     int? itemCount,
     this.mainAxisSpacing = 0.0,
     this.crossAxisSpacing = 0.0,
+    this.relayoutBehavior = MasonryRelayoutBehavior.exact,
     bool addAutomaticKeepAlives = true,
     bool addRepaintBoundaries = true,
     bool addSemanticIndexes = true,
@@ -187,6 +190,7 @@ class MasonryGridView extends BoxScrollView {
     required this.childrenDelegate,
     this.mainAxisSpacing = 0.0,
     this.crossAxisSpacing = 0.0,
+    this.relayoutBehavior = MasonryRelayoutBehavior.exact,
     @Deprecated(
       'Use scrollCacheExtent instead. '
       'This feature was deprecated after v3.41.0-0.0.pre.',
@@ -228,6 +232,7 @@ class MasonryGridView extends BoxScrollView {
     required int crossAxisCount,
     this.mainAxisSpacing = 0.0,
     this.crossAxisSpacing = 0.0,
+    this.relayoutBehavior = MasonryRelayoutBehavior.exact,
     required IndexedWidgetBuilder itemBuilder,
     int? itemCount,
     bool addAutomaticKeepAlives = true,
@@ -284,6 +289,7 @@ class MasonryGridView extends BoxScrollView {
     required double maxCrossAxisExtent,
     this.mainAxisSpacing = 0.0,
     this.crossAxisSpacing = 0.0,
+    this.relayoutBehavior = MasonryRelayoutBehavior.exact,
     required IndexedWidgetBuilder itemBuilder,
     int? itemCount,
     bool addAutomaticKeepAlives = true,
@@ -327,6 +333,9 @@ class MasonryGridView extends BoxScrollView {
   /// {@macro fsgv.global.crossAxisSpacing}
   final double crossAxisSpacing;
 
+  /// {@macro fsgv.global.relayoutBehavior}
+  final MasonryRelayoutBehavior relayoutBehavior;
+
   /// A delegate that provides the children for the [MasonryGridView].
   ///
   /// The [MasonryGridView.custom] constructor lets you specify this delegate
@@ -341,6 +350,7 @@ class MasonryGridView extends BoxScrollView {
       gridDelegate: gridDelegate,
       mainAxisSpacing: mainAxisSpacing,
       crossAxisSpacing: crossAxisSpacing,
+      relayoutBehavior: relayoutBehavior,
     );
   }
 }

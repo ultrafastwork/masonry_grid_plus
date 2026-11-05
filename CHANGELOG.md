@@ -1,5 +1,10 @@
 ## Unreleased
+### Added
+* `relayoutBehavior` on `MasonryGridView`, `SliverMasonryGrid` and `RenderSliverMasonryGrid`. `MasonryRelayoutBehavior.anchored` makes a change of the column layout while scrolled cost only the children around the viewport instead of every child before it, at the price of approximate positions above the viewport until the start of the grid is reached. The default, `MasonryRelayoutBehavior.exact`, keeps the exact layout.
 ### Fixed
+* `MasonryGridView`: resizing without changing the column count (e.g. a window resize, or split-screen) no longer makes visible tiles jump between columns while scrolling back up. The same applies to changing `mainAxisSpacing` or `crossAxisSpacing`.
+* `MasonryGridView`: after the column count changes, the first visible tile keeps its position on screen. It used to be placed above the viewport, at the start of the cache area.
+* `MasonryGridView`: changing the column layout no longer destroys and recreates the visible tiles, so their state is kept.
 * `StaggeredGrid` dry layout no longer reads stale child sizes or mutates child offsets.
 * `StaggeredGridTile.fit` no longer crashes when the grid's axis direction is reversed.
 * `SliverAlignedGrid`/`AlignedGridView` dry layout no longer assigns `size`.

@@ -23,6 +23,7 @@ class SliverMasonryGrid extends SliverMultiBoxAdaptorWidget {
     required this.gridDelegate,
     this.mainAxisSpacing = 0,
     this.crossAxisSpacing = 0,
+    this.relayoutBehavior = MasonryRelayoutBehavior.exact,
   }) : assert(mainAxisSpacing >= 0),
        assert(crossAxisSpacing >= 0);
 
@@ -41,6 +42,7 @@ class SliverMasonryGrid extends SliverMultiBoxAdaptorWidget {
     int? childCount,
     double mainAxisSpacing = 0,
     double crossAxisSpacing = 0,
+    MasonryRelayoutBehavior relayoutBehavior = MasonryRelayoutBehavior.exact,
   }) : this(
          key: key,
          delegate: SliverChildBuilderDelegate(
@@ -52,6 +54,7 @@ class SliverMasonryGrid extends SliverMultiBoxAdaptorWidget {
          ),
          mainAxisSpacing: mainAxisSpacing,
          crossAxisSpacing: crossAxisSpacing,
+         relayoutBehavior: relayoutBehavior,
        );
 
   /// Creates a sliver that places multiple box children in a Masonry
@@ -69,6 +72,7 @@ class SliverMasonryGrid extends SliverMultiBoxAdaptorWidget {
     int? childCount,
     double mainAxisSpacing = 0,
     double crossAxisSpacing = 0,
+    MasonryRelayoutBehavior relayoutBehavior = MasonryRelayoutBehavior.exact,
   }) : this(
          key: key,
          delegate: SliverChildBuilderDelegate(
@@ -80,6 +84,7 @@ class SliverMasonryGrid extends SliverMultiBoxAdaptorWidget {
          ),
          mainAxisSpacing: mainAxisSpacing,
          crossAxisSpacing: crossAxisSpacing,
+         relayoutBehavior: relayoutBehavior,
        );
 
   /// {@macro fsgv.global.gridDelegate}
@@ -91,6 +96,9 @@ class SliverMasonryGrid extends SliverMultiBoxAdaptorWidget {
   /// {@macro fsgv.global.crossAxisSpacing}
   final double crossAxisSpacing;
 
+  /// {@macro fsgv.global.relayoutBehavior}
+  final MasonryRelayoutBehavior relayoutBehavior;
+
   @override
   RenderSliverMasonryGrid createRenderObject(BuildContext context) {
     final SliverMultiBoxAdaptorElement element =
@@ -100,6 +108,7 @@ class SliverMasonryGrid extends SliverMultiBoxAdaptorWidget {
       gridDelegate: gridDelegate,
       mainAxisSpacing: mainAxisSpacing,
       crossAxisSpacing: crossAxisSpacing,
+      relayoutBehavior: relayoutBehavior,
     );
   }
 
@@ -111,6 +120,7 @@ class SliverMasonryGrid extends SliverMultiBoxAdaptorWidget {
     renderObject
       ..gridDelegate = gridDelegate
       ..mainAxisSpacing = mainAxisSpacing
-      ..crossAxisSpacing = crossAxisSpacing;
+      ..crossAxisSpacing = crossAxisSpacing
+      ..relayoutBehavior = relayoutBehavior;
   }
 }
