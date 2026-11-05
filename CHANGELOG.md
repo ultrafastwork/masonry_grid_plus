@@ -1,4 +1,4 @@
-## Unreleased
+## 0.2.0
 ### Added
 * `relayoutBehavior` on `MasonryGridView`, `SliverMasonryGrid` and `RenderSliverMasonryGrid`. `MasonryRelayoutBehavior.anchored` makes a change of the column layout while scrolled cost only the children around the viewport instead of every child before it, at the price of approximate positions above the viewport until the start of the grid is reached. The default, `MasonryRelayoutBehavior.exact`, keeps the exact layout.
 ### Fixed
