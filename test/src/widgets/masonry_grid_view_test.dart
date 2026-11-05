@@ -1,4 +1,5 @@
 import 'package:flutter/gestures.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:masonry_grid_plus/src/widgets/masonry_grid_view.dart';
@@ -32,7 +33,7 @@ void main() {
       Directionality(
         textDirection: TextDirection.ltr,
         child: MasonryGridView.count(
-          cacheExtent: 0,
+          scrollCacheExtent: const ScrollCacheExtent.pixels(0),
           dragStartBehavior: DragStartBehavior.down,
           crossAxisCount: 4,
           itemBuilder: (context, index) {
@@ -79,7 +80,7 @@ void main() {
       Directionality(
         textDirection: TextDirection.ltr,
         child: MasonryGridView.extent(
-          cacheExtent: 0,
+          scrollCacheExtent: const ScrollCacheExtent.pixels(0),
           dragStartBehavior: DragStartBehavior.down,
           maxCrossAxisExtent: 200,
           itemBuilder: (context, index) {

@@ -127,6 +127,17 @@ class _SliverPatternGridLayout extends SliverGridLayout {
   final int tileCount;
   final double patternMainAxisExtent;
 
+  /// For each tile index `i`, the max trailing scroll offset of tiles `0..i`.
+  late final List<double> _maxTrailingScrollOffsets = () {
+    final result = List<double>.filled(tileCount, 0);
+    var currentMax = double.negativeInfinity;
+    for (var i = 0; i < tileCount; i++) {
+      currentMax = math.max(currentMax, tiles[i].trailingScrollOffset);
+      result[i] = currentMax;
+    }
+    return result;
+  }();
+
   @override
   double computeMaxScrollOffset(int childCount) {
     if (childCount == 0) {
@@ -142,13 +153,9 @@ class _SliverPatternGridLayout extends SliverGridLayout {
 
     // We have to get the max scroll offset for the track where the tile with
     // index, childCount - 1, is.
-    // TODO(romain): Can be optimized.
     final maxIndex = (childCount - 1) % tileCount;
-    final maxRemainingScrollOffset = tiles
-        .take(maxIndex + 1)
-        .map((x) => x.trailingScrollOffset)
-        .reduce(math.max);
-    return lastFilledPatternTrailingScrollOffset + maxRemainingScrollOffset;
+    return lastFilledPatternTrailingScrollOffset +
+        _maxTrailingScrollOffsets[maxIndex];
   }
 
   @override

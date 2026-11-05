@@ -1,4 +1,5 @@
 import 'package:flutter/gestures.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:masonry_grid_plus/src/widgets/aligned_grid_view.dart';
@@ -75,7 +76,7 @@ void main() {
       Directionality(
         textDirection: TextDirection.ltr,
         child: AlignedGridView.count(
-          cacheExtent: 0,
+          scrollCacheExtent: const ScrollCacheExtent.pixels(0),
           dragStartBehavior: DragStartBehavior.down,
           crossAxisCount: 4,
           itemBuilder: (context, index) {
@@ -125,7 +126,7 @@ void main() {
       Directionality(
         textDirection: TextDirection.ltr,
         child: AlignedGridView.extent(
-          cacheExtent: 0,
+          scrollCacheExtent: const ScrollCacheExtent.pixels(0),
           dragStartBehavior: DragStartBehavior.down,
           maxCrossAxisExtent: 200,
           itemBuilder: (context, index) {
